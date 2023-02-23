@@ -1,6 +1,5 @@
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
-const mongoose = require('mongoose');
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -15,10 +14,23 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.file;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
-  console.log(imageUrl);
+
+  if (!image) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      hasError: true,
+      product: { title, price, description },
+      errorMessage: 'Attached file is not an image',
+      validationErrors: [],
+    });
+  }
+
+  const imageUrl = image.path;
 
   // Catching Validation errors
   const errors = validationResult(req);
@@ -35,10 +47,10 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   const product = new Product({
-    title: title,
-    price: price,
-    description: description,
-    imageUrl: imageUrl,
+    title,
+    price,
+    description,
+    imageUrl,
     userId: req.user,
   });
 
@@ -49,9 +61,6 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      // res.redirect("/500");
-
-      // --------- this will get handled by express error middleware ----------- //
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
@@ -90,7 +99,7 @@ exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
-  const updatedImageUrl = req.body.imageUrl;
+  const image = req.file;
   const updatedDesc = req.body.description;
 
   const errors = validationResult(req);
@@ -102,7 +111,7 @@ exports.postEditProduct = (req, res, next) => {
       hasError: true,
       product: {
         title: updatedTitle,
-        imageUrl: updatedImageUrl,
+        imageUrl: image.path,
         price: updatedPrice,
         description: updatedDesc,
         _id: prodId,
@@ -121,7 +130,10 @@ exports.postEditProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
-      product.imageUrl = updatedImageUrl;
+      /* update image only there is new image is uploaded */
+      if (image) {
+        product.imageUrl = image.path;
+      }
       return product.save().then((result) => {
         console.log("UPDATED PRODUCT!");
         res.redirect("/admin/products");

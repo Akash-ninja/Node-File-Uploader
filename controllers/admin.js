@@ -40,7 +40,7 @@ exports.postAddProduct = (req, res, next) => {
       path: "/admin/add-product",
       editing: false,
       hasError: true,
-      product: { title, imageUrl, price, description },
+      product: { title, price, description },
       errorMessage: `${errors.array()[0].msg} in ${errors.array()[0].param}`,
       validationErrors: errors.array(),
     });
@@ -111,7 +111,6 @@ exports.postEditProduct = (req, res, next) => {
       hasError: true,
       product: {
         title: updatedTitle,
-        imageUrl: image.path,
         price: updatedPrice,
         description: updatedDesc,
         _id: prodId,

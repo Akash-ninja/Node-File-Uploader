@@ -133,6 +133,8 @@ exports.getInvoice = (req, res, next) => {
       }
       const invoiceName = "invoice-" + orderId + ".pdf";
       const invoicePath = path.join("data", "invoices", invoiceName);
+
+      // Sequential file processing -- inefficient for large file
       fs.readFile(invoicePath, (err, data) => {
         if (err) {
           return next(err);

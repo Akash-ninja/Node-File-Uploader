@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path');
+const PDFDocument = require('pdfkit');
 
 const Product = require("../models/product");
 const Order = require("../models/order");
@@ -134,25 +135,18 @@ exports.getInvoice = (req, res, next) => {
       const invoiceName = "invoice-" + orderId + ".pdf";
       const invoicePath = path.join("data", "invoices", invoiceName);
 
-      // Streaming data
-      // -------- this doesn't works ----------
-      /*  const file = fs.createReadStream(invoicePath);
-      res.send(data);
-      file.pipe(res); */
+      const pdfDoc = new PDFDocument();
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'inline; filename="' + invoiceName + '"'
+      );
+      pdfDoc.pipe(fs.createWriteStream(invoicePath)); //pdf generated and stored in the server
+      pdfDoc.pipe(res); // return it to the client
 
-      // -------- this works ----------
-      const options = {
-        root: ".",
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": 'inline; filename="' + invoiceName + '"',
-        },
-      };
-      res.sendFile(invoicePath, options, (err) => {
-        if (err) {
-          return next(err);
-        }
-      });
+      pdfDoc.text("Hello World!");
+
+      pdfDoc.end(); // done writing to the stream
     })
     .catch((err) => next(err));
 };

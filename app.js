@@ -16,7 +16,7 @@ const User = require("./models/user");
 
 const MongoDBStore = require("connect-mongodb-session")(session);
 const MONGODB_URI =
-  "mongodb+srv://akash-nodejs:WS9GdoHoQJPub4Rm@cluster0.ttk1w7w.mongodb.net/shop?w=majority";
+  "**************YOUR MONGODB CONNECTION STRING*******************";
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",

@@ -19,7 +19,7 @@ module.exports = (app) => {
       'putObject',
       {
         Bucket: 'akash-blog-bucket-789',
-        ContentType: 'jpeg',
+        ContentType: 'image/jpeg',
         Key: key,
       },
       (err, url) => {

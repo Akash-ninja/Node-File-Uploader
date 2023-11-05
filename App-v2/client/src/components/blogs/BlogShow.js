@@ -18,8 +18,16 @@ class BlogShow extends Component {
       <div>
         <h3>{title}</h3>
         <p>{content}</p>
+        {this.props.blog.imageUrl && (
+          <img
+            src={
+              'https://akash-blog-bucket-789.s3.ap-south-1.amazonaws.com/' +
+              this.props.blog.imageUrl
+            }
+          />
+        )}
       </div>
-    );
+    )
   }
 }
 

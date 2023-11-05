@@ -1,0 +1,14 @@
+1. create bucket after login into amazon aws console
+2. bucket name should be unique in that region
+3. open up IAM in new tab, click on policies
+4. Click on create policy and select S3 service and allow all the actions, 
+ 	for resources - click on specific and then to bucket (add ARN) and provide your bucket name 
+ 			and for object (add bucket name inside bucket and add any for object)
+ 	ARN - identifier for specific bucket we created
+5. Give policy name and create the policy
+6. Create programmable access key
+
+
+After uploading is done, we have to change some AWS S3 bucket policy to access the uploaded file
+1. Go to S3 dashboard and inside bucket policy and generate policy using policy generator
+2. Select 'GetObject' action and principal as * and insert ARN as suggested
